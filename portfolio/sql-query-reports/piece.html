@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+
+<html lang="en">
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+		<title>Tanya Grimes Portfolio</title> 
+
+		<link rel="shortcut icon" href="../../assets/images/favicon.png"> 
+		<link rel="apple-itouch-icon" href="../../assets/images/favicon.png">
+
+		<link href='http://fonts.googleapis.com/css?family=Lobster|Open+Sans+Condensed:300,700|Open+Sans:400,300|Dosis:400,300,500,700,800|Roboto:400,300,500|Roboto+Condensed:400,700' rel='stylesheet' type='text/css'>
+
+		<!-- Stylesheets -->
+		<link rel="stylesheet" href="../../assets/styles/reset.css" type="text/css" media="screen" />
+		<link rel="stylesheet" href="../../assets/styles/prism.css" type="text/css" />
+		<link rel="stylesheet" href="../../assets/styles/main.css" type="text/css" media="screen" />
+	</head>
+
+	<body>
+
+		<div class="content-wrapper">
+			<!-- header starts-->
+			<div class="header-wrapper">
+				<header class="container">
+					<h1>
+						<a href="../../index.html">
+							<img src="../../assets/images/logo.svg" alt="Tanya Grimes">
+						</a>
+					</h1>
+
+					<!-- <div class="menu-button"><img src="../../assets/images/menu.svg" alt="Menu"></div> -->
+
+					<!-- <nav>
+						<ul>
+						<li><a href="../../portfolio.html">Portfolio</a></li>
+		                <li><a href="../../about.html">About</a></li>
+		                <li><a href="mailto:tanyargrimes@gmail.com">Contact</a></li>
+						</ul>
+					</nav> -->
+				</header>
+				<!-- header ends-->
+			</div>
+
+			<!-- details-wrapper-->
+			<div class="details-wrapper">
+				<div class="header-spacer"></div>
+
+				<!-- concept starts-->
+				<div class="details-wrapper">
+					<section class="details container">
+						<h2>Building Reports from SQL Queries</h2>
+						<img src="../../assets/images/pieces/sql-query-reporting/sql-query-charts-banner.jpg" alt="SQL Queries for Reports">
+						
+						<p>
+							<span>Skills:</span>
+							SQL, Excel, MS SQL Server
+						</p>
+						<ul class="tags">
+							<li>SQL</li>
+							<li>Data Visualization</li>
+						</ul>
+						<ul class="links">
+							<li><a class="cta-button-link" href="https://github.com/tanyargrimes/sql-views" target="_blank">View SQL Code</a></li>
+						</ul>
+						
+						<h2>The Scenario</h2>
+						<p>
+							SQL is a skill consistently sought after in the data world. This was just a simple exercise
+							of building complex queries from data for practice. The idea was to explore the tables and 
+							identify queries that could suffice potnetial business rules. The tables returned from these 
+							queries can be visualized with various charts. The visualization software of choice was Excel
+							since tables could easily be imported from MS SQL Server. The data was taken from the
+							<a href="http://www.sqlservertutorial.net/load-sample-database/" target="_blank">SQL Server Tutorial</a> site.
+						</p>
+
+						<h2>SQL Queries</h2>
+						<p>
+							One interesting query was to summarize various metrics using SQL aggregate functions. Common
+							Table Expressions (CTEs) were used to organize the structure when possible.
+						</p>
+						<div class="pre-wrapper">
+							<span class="pre-language">SQL</span>
+							<pre class="language-sql sql">
+								<code>
+CREATE OR ALTER VIEW own.v_summary_statistics_by_store WITH ENCRYPTION AS
+	WITH cte_store_sale_info AS (
+		SELECT s.store_name,
+			CAST(SUM(i.quantity * i.list_price * (1 - i.discount)) AS DECIMAL(20,2)) total_sales,
+			CAST(AVG(i.quantity * i.list_price * (1 - i.discount)) AS DECIMAL(20,2)) avg_sales,
+			CAST(MIN(i.quantity * i.list_price * (1 - i.discount)) AS DECIMAL(20,2)) min_sales,
+			CAST(MAX(i.quantity * i.list_price * (1 - i.discount)) AS DECIMAL(20,2)) max_sales
+		FROM sales.orders o 
+			INNER JOIN sales.stores s ON s.store_id = o.store_id
+			INNER JOIN sales.order_items i ON o.order_id = i.order_id
+		WHERE YEAR(o.order_date) = 2018 
+		GROUP BY YEAR(o.order_date), s.store_name
+	),
+	cte_total_orders AS (
+		SELECT s.store_name,
+			COUNT(o.order_id) total_orders 
+			FROM sales.orders o
+				INNER JOIN sales.stores s ON s.store_id = o.store_id
+			WHERE YEAR(o.order_date) = 2018 
+			GROUP BY YEAR(o.order_date), s.store_name
+	),
+	cte_total_customers AS (
+		SELECT s.store_name,
+			COUNT(DISTINCT c.customer_id) total_customers
+			FROM sales.customers c
+				INNER JOIN sales.orders o ON o.customer_id = c.customer_id
+				INNER JOIN sales.stores s ON s.store_id = o.store_id
+			WHERE YEAR(o.order_date) = 2018 
+			GROUP BY YEAR(o.order_date), s.store_name
+	)
+	SELECT s.store_name, c.total_customers, o.total_orders, s.total_sales, s.avg_sales, s.min_sales, s.max_sales
+	FROM cte_store_sale_info s 
+		INNER JOIN cte_total_orders o ON s.store_name = o.store_name
+		INNER JOIN cte_total_customers c ON s.store_name = c.store_name
+	ORDER BY s.total_sales DESC
+	OFFSET 0 ROWS
+GO
+SELECT * FROM own.v_summary_statistics_by_store;
+GO
+								</code>
+							</pre>
+						</div>
+						<div class="table-wrapper">
+							<table>
+								<thead>
+									<tr>
+										<th>store_name</th>
+										<th>total_customers</th>
+										<th>total_orders</th>
+										<th>total_sales</th>
+										<th>avg_sales</th>
+										<th>min_sales</th>
+										<th>max_sales</th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr>
+										<td>Baldwin Bikes</td>
+										<td>160</td>
+										<td>173</td>
+										<td>1145464</td>
+										<td>2129.12</td>
+										<td>71.99</td>
+										<td>21599.98</td>
+									</tr>
+									<tr>
+										<td>Santa Cruz Bikes</td>
+										<td>80</td>
+										<td>85</td>
+										<td>477421.29</td>
+										<td>1981</td>
+										<td>151.99</td>
+										<td>11159.98</td>
+									</tr>
+									<tr>
+										<td>Rowlett Bikes</td>
+										<td>30</td>
+										<td>834</td>
+										<td>191644.5</td>
+										<td>1916.45</td>
+										<td>143.98</td>
+										<td>10799.98</td>
+									</tr>
+								</tbody>
+							</table>
+						</div>
+
+						<p>These queries could also produce Pareto Charts. This one in particular will provide results on
+							the influence of product cateogries on total sales to help understand the consumer market better.
+						</p>
+						<div class="pre-wrapper">
+							<span class="pre-language">SQL</span>
+							<pre class="language-sql sql">
+								<code>
+CREATE OR ALTER VIEW own.v_pareto_total_category_sales WITH ENCRYPTION AS
+WITH cte_total_sales AS (
+	SELECT SUM(quantity * list_price * (1 - discount)) sales_sum FROM sales.order_items
+),
+cte_category_sales AS (
+	SELECT  c.category_name, CAST(SUM(i.quantity * i.list_price * (1 - i.discount)) AS DECIMAL(10,2)) sales
+	FROM sales.order_items i
+		INNER JOIN production.products p ON p.product_id = i.product_id
+		INNER JOIN sales.orders o ON o.order_id = i.order_id
+		INNER JOIN production.categories c ON c.category_id = p.category_id
+	GROUP BY c.category_name
+) 
+SELECT category_name, total_sales, 
+	CAST(SUM(total_sales) OVER (ORDER BY total_sales DESC) / (SELECT sales_sum FROM cte_total_sales) * 100 AS DECIMAL(10,2)) AS cumulative_percent
+FROM (
+	SELECT category_name, CAST(sales AS DECIMAL(10,2)) total_sales
+	FROM cte_category_sales
+	ORDER BY total_sales DESC
+	OFFSET 0 ROWS
+) source_table;
+GO
+SELECT * FROM own.v_pareto_total_category_sales;
+GO
+								</code>
+							</pre>
+						</div>
+						<div class="table-wrapper">
+							<table>
+								<thead>
+									<tr>
+										<th>category_name</th>
+										<th>total_sales</th>
+										<th>cumulative_percent</th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr>
+										<td>Mountain Bikes</td>
+										<td>2715079.53</td>
+										<td>35.31</td>
+									</tr>
+									<tr>
+										<td>Road Bikes</td>
+										<td>1665098.49</td>
+										<td>56.97</td>
+									</tr>
+									<tr>
+										<td>Cruisers Bicycles</td>
+										<td>995032.62</td>
+										<td>69.91</td>
+									</tr>
+									<tr>
+										<td>Electric Bikes</td>
+										<td>916684.78</td>
+										<td>81.83</td>
+									</tr>
+									<tr>
+										<td>Cyclocross Bicycles</td>
+										<td>711011.84</td>
+										<td>91.08</td>
+									</tr>
+									<tr>
+										<td>Comfort Bicycles</td>
+										<td>394020.1</td>
+										<td>96.2</td>
+									</tr>
+									<tr>
+										<td>Children Bicycles</td>
+										<td>292189.2</td>
+										<td>100</td>
+									</tr>
+								</tbody>
+							</table>
+						</div>
+
+						<div class="chart-wrapper">
+							<div id="pareto-chart"></div>
+						</div>
+						<p>
+							Excel was used to create the visualizations originally. However, amCharts creates a 
+							nice interactive display for the web.
+						</p>
+
+						<h2>Next Steps</h2>
+						<div class="left-side even">
+							<div class="left-side">
+								<img src="../../assets/images/pieces/rekognition-image-search/list-custom-labeling.png" alt="Exploratory Analysis">
+							</div>
+							<div class="right-side">
+								<p>
+									Show the exploratory analysis while investigating the data.
+								</p>
+							</div>
+						</div>
+						<div class="right-side even">
+							<div class="left-side">
+								<img src="../../assets/images/pieces/rekognition-image-search/list-expansion.png" alt="Further Development">
+							</div>
+							<div class="right-side">
+								<p>
+									Show the full Excel report.
+								</p>
+							</div>
+						</div>
+					</section>
+				</div>
+				<!-- concept ends-->
+
+				<div class="header-spacer"></div>
+				<div class="header-spacer"></div>
+				<div class="header-spacer"></div>
+
+			</div>
+			<!--details ends-->
+
+			<!-- footer starts-->
+			<div class="footer-wrapper">
+				<footer class="container">
+					<!-- <p>Created by Tanya Grimes 2021</p> -->
+
+					<!-- social connection starts-->
+					<div class="social-wrapper">
+						<section class="social container">
+							<a class="email-contact" href="mailto:tanyargrimes@gmail.com">tanyargrimes@gmail.com</a>
+							<ul>
+								<li>
+									<a href="https://www.linkedin.com/in/tanyargrimes" target="_blank">
+										<img src="../../assets/images/linkedin-black.svg" alt="linked in">
+									</a>
+								</li>
+								<li>
+									<a href="https://github.com/tanyargrimes" target="_blank">
+										<img src="../../assets/images/github-black.svg" alt="github">
+									</a>
+								</li>
+								<li>
+									<a href="contact.html">
+										<img src="../../assets/images/contact-black.svg" alt="contact form">
+									</a>
+								</li>
+							</ul>
+						</section>
+					</div><!-- social connection ends-->	
+				</footer>
+			</div><!-- footer ends-->
+					
+		</div>
+	</body>
+
+	<!--Scripts after page load -->
+	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js" type="text/javascript"></script>
+	<!-- <script src="js/floating-bubbles.js" type="text/javascript"></script> -->
+	<!-- <script src="../../assets/scripts/main.js" type="text/javascript"></script> -->
+	<script src="../../assets/scripts/prism.js" type="text/javascript"></script>
+	<script src="https://cdn.amcharts.com/lib/4/core.js"></script>
+	<script src="https://cdn.amcharts.com/lib/4/charts.js"></script>
+	<script src="https://cdn.amcharts.com/lib/4/themes/animated.js"></script>
+	<script src="../../assets/scripts/customcharts.js" type="text/javascript"></script>
+
+	<!--[if lt IE 9]>
+		<script src="js/html5shiv.js"></script>
+	<![endif]-->
+
+</html>

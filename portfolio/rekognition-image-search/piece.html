@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+
+<html lang="en">
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+		<title>Tanya Grimes Portfolio</title> 
+
+		<link rel="shortcut icon" href="../../assets/images/favicon.png"> 
+		<link rel="apple-itouch-icon" href="../../assets/images/favicon.png">
+
+		<link href='http://fonts.googleapis.com/css?family=Lobster|Open+Sans+Condensed:300,700|Open+Sans:400,300|Dosis:400,300,500,700,800|Roboto:400,300,500|Roboto+Condensed:400,700' rel='stylesheet' type='text/css'>
+
+		<!-- Stylesheets -->
+		<link rel="stylesheet" href="../../assets/styles/reset.css" type="text/css" media="screen" />
+		<link rel="stylesheet" href="../../assets/styles/main.css" type="text/css" media="screen" />
+	</head>
+
+	<body>
+
+		<div class="content-wrapper">
+			<!-- header starts-->
+			<div class="header-wrapper">
+				<header class="container">
+					<h1>
+						<a href="../../index.html">
+							<img src="../../assets/images/logo.svg" alt="Tanya Grimes">
+						</a>
+					</h1>
+
+					<!-- <div class="menu-button"><img src="../../assets/images/menu.svg" alt="Menu"></div> -->
+
+					<!-- <nav>
+						<ul>
+						<li><a href="../../portfolio.html">Portfolio</a></li>
+		                <li><a href="../../about.html">About</a></li>
+		                <li><a href="mailto:tanyargrimes@gmail.com">Contact</a></li>
+						</ul>
+					</nav> -->
+				</header>
+				<!-- header ends-->
+			</div>
+
+			<!-- details-wrapper-->
+			<div class="details-wrapper">
+				<div class="header-spacer"></div>
+
+				<!-- concept starts-->
+				<div class="details-wrapper">
+					<section class="details container">
+						<h2>Rekognition Image Search</h2>
+						<img src="../../assets/images/thumbnails/image-search2.png" alt="Image Search">
+						
+						<p>
+							<span>Skills:</span>
+							AWS (Rekognition, CloudFormation Stack, Lambda, ElasticSearch, Amplify), Angular
+						</p>
+						<ul class="tags">
+							<li>Machine Learning</li>
+							<li>NoSQL</li>
+							<li>Web Development</li>
+						</ul>
+						<ul class="links">
+							<li><a class="cta-button-link" href="https://master.d2ox8kse4e6jal.amplifyapp.com" target="_blank">Try it here!</a></li>
+							<li><a class="cta-button-link" href="https://github.com/tanyargrimes/aws-rek-es-image-search" target="_blank">View Angular Code</a></li>
+						</ul>
+						
+						<h2>The Scenario</h2>
+						<p>
+							There are instances when a task that initially took seconds to process becomes more time-
+							consuming. Taking a manual image search for example, when there are only 10 images, it is 
+							quite easy to search. However, after accumulation of thousands of images, this manual task 
+							becomes overwhleming, especially when the image names may not be intuitive.
+						</p>
+
+						<img src="../../assets/images/pieces/rekognition-image-search/manual-rekognition.png" alt="Manual Rekognition Process">
+						<p>
+							One solution for this is to use object detection algorithms to identify features within
+							the images and use the resultant labels to query for a potential match. AWS Rekognition
+							was used to detect the objects in the images and label each with a level of confidence.
+						</p>
+
+						<h2>The Goal</h2>
+						<img src="../../assets/images/pieces/rekognition-image-search/automated-rekognition-search.png" alt="Automated Rekognition Process">
+						<p>
+							The goal was to leverage that manual process into something more automatic, where the 
+							communal images could be labelled by the object detection algorithm and have those labels 
+							persist to be queried from a suitable interface.
+						</p>
+
+						<h2>Building the Prototype</h2>
+						<img src="../../assets/images/pieces/rekognition-image-search/key-services.png" alt="Key Services">
+						<p>
+							Taking this concept in mind, along with some research starting points, an automated stack 
+							was created, where several components work together to produce the desired results. The main 
+							events are illustrated here. However, there are other components assisting in the background.
+						</p>
+
+						<h2>Lessons Learnt</h2>
+						<div class="left-side">
+							<img src="../../assets/images/pieces/rekognition-image-search/limited-labels.png" alt="Limited Labels">
+						</div>
+						<div class="right-side">
+							<h3>Limited labels to represent an object</h3>
+							<p>
+								For example, ‘zebra-crossing’ was the only label returned to represent a pedestrian 
+								crosswalk. So, unfortunately if a user searched for ‘crosswalk’, no images would be 
+								returned. 
+							</p>
+						</div>
+						<div class="left-side">
+							<img src="../../assets/images/pieces/rekognition-image-search/lacking-context.png" alt="Lacking Context">
+						</div>
+						<div class="right-side">
+							<h3>Lack of Canadian context at times</h3>
+							<p>
+								Some labels seemed to be more suited for a European audience such as ‘tram’ and ‘trolley’. 
+								However, the term ‘light rail’ returns unrelated images, containing traffic lights or railings. 
+								Luckily, the label ‘train’ was available. 
+							</p>
+						</div>
+						<div class="left-side">
+							<img src="../../assets/images/pieces/rekognition-image-search/keep-improving.png" alt="Keep Improving">
+						</div>
+						<div class="right-side">
+							<h3>Keep Improving!</h3>
+							<p>
+								This is something we need to investigate further. Hopefully, AWS Rekognition’s custom 
+								labeling will help to alleviate some of these quirks in future iterations of this prototype.
+							</p>
+						</div>
+						<p></p>
+
+						<h2>Next Steps</h2>
+						<div class="left-side even">
+							<div class="left-side">
+								<img src="../../assets/images/pieces/rekognition-image-search/list-custom-labeling.png" alt="Custom Labeling">
+							</div>
+							<div class="right-side">
+								<p>
+									Investigating custom labeling to create missing and more intuitive labels.
+								</p>
+							</div>
+
+							<div class="left-side">
+								<img src="../../assets/images/pieces/rekognition-image-search/list-auto-cleanup.png" alt="Automated Cleanup">
+							</div>
+							<div class="right-side">
+								<p>
+									Having an automated cleanup to remove labels from the ElasticSearch cluster when their corresponding
+								</p>
+							</div>
+						</div>
+						<div class="right-side even">
+							<div class="left-side">
+								<img src="../../assets/images/pieces/rekognition-image-search/list-performance.png" alt="Image Performance">
+							</div>
+							<div class="right-side">
+								<p>
+									Improving performance when displaying a larger number of images per query on the client.
+								</p>
+							</div>
+
+							<div class="left-side">
+								<img src="../../assets/images/pieces/rekognition-image-search/list-expansion.png" alt="Further Development">
+							</div>
+							<div class="right-side">
+								<p>
+									Exploring further development for the prototype to identify additional areas that can streamline image searches.
+								</p>
+							</div>
+						</div>
+					</section>
+				</div>
+				<!-- concept ends-->
+
+				<div class="header-spacer"></div>
+				<div class="header-spacer"></div>
+				<div class="header-spacer"></div>
+
+			</div>
+			<!--details ends-->
+
+			<!-- footer starts-->
+			<div class="footer-wrapper">
+				<footer class="container">
+					<!-- <p>Created by Tanya Grimes 2021</p> -->
+
+					<!-- social connection starts-->
+					<div class="social-wrapper">
+						<section class="social container">
+							<a class="email-contact" href="mailto:tanyargrimes@gmail.com">tanyargrimes@gmail.com</a>
+							<ul>
+								<li>
+									<a href="https://www.linkedin.com/in/tanyargrimes" target="_blank">
+										<img src="../../assets/images/linkedin-black.svg" alt="linked in">
+									</a>
+								</li>
+								<li>
+									<a href="https://github.com/tanyargrimes" target="_blank">
+										<img src="../../assets/images/github-black.svg" alt="github">
+									</a>
+								</li>
+								<li>
+									<a href="contact.html">
+										<img src="../../assets/images/contact-black.svg" alt="contact form">
+									</a>
+								</li>
+							</ul>
+						</section>
+					</div><!-- social connection ends-->	
+				</footer>
+			</div><!-- footer ends-->
+					
+		</div>
+	</body>
+
+	<!--Scripts after page load -->
+	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js" type="text/javascript"></script>
+	<!-- <script src="js/floating-bubbles.js" type="text/javascript"></script> -->
+	<script src="../../assets/scripts/main.js" type="text/javascript"></script>
+
+	<!--[if lt IE 9]>
+		<script src="js/html5shiv.js"></script>
+	<![endif]-->
+
+</html>
